@@ -30,6 +30,9 @@ export default function WW2Globe() {
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
   const isMobile = useIsMobile();
 
+  // 👇 NEW: state for showing/hiding calendar on mobile
+  const [showCalendar, setShowCalendar] = useState(false);
+
   // 🪟 Handle dynamic window resizing
   useEffect(() => {
     const handleResize = () => {
@@ -60,9 +63,19 @@ export default function WW2Globe() {
     globeRef.current.pointOfView({ lat: 20, lng: 0, altitude }, 2000);
   }, [dimensions, isMobile]);
 
-  // Buy Me a Coffee: Dynamic load with event dispatch
+  // 👇 NEW: ensure globe re-renders properly after resize (especially on mobile Safari)
   useEffect(() => {
-    // Avoid re-adding if already loaded
+    if (globeRef.current && dimensions) {
+      setTimeout(() => {
+        if (globeRef.current.width) {
+          globeRef.current.refresh();
+        }
+      }, 300);
+    }
+  }, [dimensions]);
+
+  // Buy Me a Coffee widget
+  useEffect(() => {
     if (document.getElementById("bmc-wbtn")) return;
 
     const script = document.createElement("script");
@@ -77,7 +90,6 @@ export default function WW2Globe() {
     script.setAttribute("data-x_margin", "18");
     script.setAttribute("data-y_margin", "18");
 
-    // Key Fix: Dispatch DOMContentLoaded after script loads
     script.onload = function () {
       const evt = document.createEvent("Event");
       evt.initEvent("DOMContentLoaded", false, false);
@@ -86,7 +98,6 @@ export default function WW2Globe() {
 
     document.body.appendChild(script);
 
-    // Cleanup: Remove on unmount (prevents duplicates on re-renders)
     return () => {
       if (script.parentNode) {
         script.parentNode.removeChild(script);
@@ -96,10 +107,10 @@ export default function WW2Globe() {
         widget.parentNode.removeChild(widget);
       }
     };
-  }, []); // Empty deps: Run once on mount
+  }, []);
 
   // Filter markers by selected date (YYYY-MM-DD)
-  const selectedDateString = date.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
+  const selectedDateString = date.toLocaleDateString("en-CA");
   const markers = ww2Events.filter((e) => e.date === selectedDateString);
 
   // loading screen
@@ -115,30 +126,49 @@ export default function WW2Globe() {
     <div
       className="fixed inset-0 overflow-hidden"
       style={{
-      width: "100vw",
-      height: "100dvh", // dynamically accounts for browser UI on mobile
+        width: "100vw",
+        height: "100dvh", // dynamically accounts for browser UI on mobile
       }}
     >
       {/* 🔹 Site Title + Calendar (top left, compact on mobile) */}
-      <div className="absolute top-2 left-2 z-50 flex flex-col gap-2 w-[85vw] sm:w-auto sm:max-w-xs">
-        <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
-          WW2 Date-wise Map
-        </h1>
+      {!isMobile || showCalendar ? (
+        <div className="absolute top-2 left-2 z-50 flex flex-col gap-2 w-[85vw] sm:w-auto sm:max-w-xs">
+          <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
+            WW2 Date-wise Map
+          </h1>
 
-        {/* Calendar wrapper – limited height + scroll */}
-        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[70vh] overflow-y-auto">
-          <Calendar
-            onChange={(val) => {
-              setDate(val as Date);
-              setSelectedEvent(null); // close card when date changes
-            }}
-            value={date}
-            minDate={new Date(1919, 0, 1)}
-            maxDate={new Date(1950, 11, 31)}
-            className="text-white w-full"
-          />
+          {/* Calendar wrapper – limited height + scroll */}
+          <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[70vh] overflow-y-auto">
+            <Calendar
+              onChange={(val) => {
+                setDate(val as Date);
+                setSelectedEvent(null);
+              }}
+              value={date}
+              minDate={new Date(1919, 0, 1)}
+              maxDate={new Date(1950, 11, 31)}
+              className="text-white w-full"
+            />
+          </div>
+
+          {/* Close button only for mobile */}
+          {isMobile && (
+            <button
+              onClick={() => setShowCalendar(false)}
+              className="bg-gray-700 text-white rounded-lg mt-2 p-2 text-sm"
+            >
+              Close
+            </button>
+          )}
         </div>
-      </div>
+      ) : (
+        <button
+          onClick={() => setShowCalendar(true)}
+          className="absolute top-2 left-2 bg-gray-800 text-white rounded-full p-2 z-50 shadow-md"
+        >
+          📅
+        </button>
+      )}
 
       {/* Event Card (top right) */}
       {selectedEvent && (
@@ -156,17 +186,15 @@ export default function WW2Globe() {
         bumpImageUrl="/textures/earth-bump.jpg"
         backgroundImageUrl="/textures/stars-bg.jpg"
         pointsData={markers}
-        pointAltitude={isMobile ? 0.05 : 0.1} // Smaller points on mobile
+        pointAltitude={isMobile ? 0.05 : 0.1}
         pointColor={(d: any) => d.color || "white"}
         pointLabel={(d: any) => `${d.title} — ${d.date}`}
         onPointClick={(point: WW2Event) => setSelectedEvent(point)}
-        // Perf tweak: Lighter material on mobile
         globeMaterial={isMobile ? { roughness: 1 } : undefined}
-        // make sure the globe receives touch events behind the UI
         htmlElementsData={[]}
       />
 
-      {/* 🌍 Image Credits (bottom-left on all screens) */}
+      {/* 🌍 Image Credits */}
       <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
         Images ©{" "}
         <a
