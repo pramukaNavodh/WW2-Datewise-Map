@@ -231,28 +231,24 @@ export default function WW2Globe() {
       )}
 
       {/* 🌍 The Globe */}
-      {!isMobile && dimensions && texturesLoaded ? (
-      <Globe
-        key="desktop"
-        ref={globeRef}
-        width={dimensions.width}
-        height={dimensions.height}
-        globeImageUrl={globeTexture}
-        bumpImageUrl={bumpTexture}
-        backgroundImageUrl={backgroundTexture}
-        pointsData={markers}
-        pointAltitude={0.1}
-        pointColor={(d: any) => d.color || "white"}
-        pointLabel={(d: any) => `${d.title} — ${d.date}`}
-        onPointClick={(point: WW2Event) => setSelectedEvent(point)}
-      />
-      ) : (
-      <img
-        src={globeTexture}
-        alt="WW2 Globe"
-        className="w-full h-full object-cover"
-      />
-)}
+      {dimensions?.width > 0 && dimensions?.height > 0 && (
+        <Globe
+          key={isMobile ? "mobile" : "desktop"}
+          ref={globeRef}
+          width={dimensions.width}
+          height={dimensions.height}
+          globeImageUrl={globeTexture}
+          bumpImageUrl={isMobile ? undefined : bumpTexture}
+          backgroundImageUrl={backgroundTexture}
+          pointsData={markers}
+          pointAltitude={isMobile ? 0.05 : 0.1}
+          pointColor={(d: any) => d.color || "white"}
+          pointLabel={(d: any) => `${d.title} — ${d.date}`}
+          onPointClick={(point: WW2Event) => setSelectedEvent(point)}
+          globeMaterial={isMobile ? { roughness: 1 } : undefined}
+          htmlElementsData={[]}
+        />
+      )}
 
       {/* 🖼️ Image Credits */}
       <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
