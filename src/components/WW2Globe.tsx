@@ -7,7 +7,6 @@ import "react-calendar/dist/Calendar.css";
 import "@/styles/calender.css";
 import { ww2Events, WW2Event } from "@/data/Events";
 import EventCard from "@/components/EventCard";
-import Script from "next/script";
 
 // Import globe dynamically (client only)
 const Globe: any = dynamic(() => import("react-globe.gl"), { ssr: false });
@@ -46,6 +45,44 @@ export default function WW2Globe() {
     // Set initial zoom/position
     globeRef.current.pointOfView({ lat: 20, lng: 0, altitude: 1.5 }, 2000);
   }, [dimensions]);
+
+  // Buy Me a Coffee: Dynamic load with event dispatch
+  useEffect(() => {
+    // Avoid re-adding if already loaded
+    if (document.getElementById("bmc-wbtn")) return;
+
+    const script = document.createElement("script");
+    script.setAttribute("data-name", "BMC-Widget");
+    script.setAttribute("data-cfasync", "false");
+    script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
+    script.setAttribute("data-id", "pramuka");
+    script.setAttribute("data-description", "Support me on Buy me a coffee!");
+    script.setAttribute("data-message", "Thank you very much for your kind support!! 🥰");
+    script.setAttribute("data-color", "#FF5F5F");
+    script.setAttribute("data-position", "Left");
+    script.setAttribute("data-x_margin", "18");
+    script.setAttribute("data-y_margin", "18");
+
+    // Key Fix: Dispatch DOMContentLoaded after script loads
+    script.onload = function () {
+      const evt = document.createEvent("Event");
+      evt.initEvent("DOMContentLoaded", false, false);
+      window.dispatchEvent(evt);
+    };
+
+    document.body.appendChild(script);
+
+    // Cleanup: Remove on unmount (prevents duplicates on re-renders)
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      const widget = document.getElementById("bmc-wbtn");
+      if (widget && widget.parentNode) {
+        widget.parentNode.removeChild(widget);
+      }
+    };
+  }, []); // Empty deps: Run once on mount
 
   //  Filter markers by selected date (YYYY-MM-DD)
   const selectedDateString = date.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
@@ -107,29 +144,9 @@ export default function WW2Globe() {
         pointLabel={(d: any) => `${d.title} — ${d.date}`}
         onPointClick={(point: WW2Event) => setSelectedEvent(point)}
       />
-      {/* ☕ Buy Me a Coffee Widget */}
-      <Script
-        id="bmc-widget"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            var script = document.createElement("script");
-            script.setAttribute("data-name", "BMC-Widget");
-            script.setAttribute("data-cfasync", "false");
-            script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
-            script.setAttribute("data-id", "pramuka");
-            script.setAttribute("data-description", "Support me on Buy me a coffee!");
-            script.setAttribute("data-message", "Thank you very much for your kind support!! 🥰");
-            script.setAttribute("data-color", "#FF5F5F");
-            script.setAttribute("data-position", "Left");
-            script.setAttribute("data-x_margin", "18");
-            script.setAttribute("data-y_margin", "18");
-            document.body.appendChild(script);
-          `,
-        }}
-      />
+
       {/* 🌍 Image Credits */}
-      <div className="absolute bottom-4 right-4 z-50 text-xs text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg">
+      <div className="absolute bottom-4 left-4 z-50 text-xs text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg">
         Images ©{" "}
           <a
             href="https://planetpixelemporium.com/"
