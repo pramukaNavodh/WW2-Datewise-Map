@@ -88,6 +88,19 @@ export default function WW2Globe() {
   }, [globeTexture, bumpTexture, backgroundTexture, isMobile]);
 
   // ----------------------------
+  // 🌍 Force translations fallback for Globe
+  // ----------------------------
+  useEffect(() => {
+    if (typeof window !== "undefined" && (Globe as any).registerClientLocalizations) {
+      try {
+        (Globe as any).registerClientLocalizations({ translations: {} });
+      } catch (err) {
+        console.warn("Globe localization patch failed:", err);
+      }
+    }
+  }, []);
+
+  // ----------------------------
   // 🌍 Configure renderer and POV
   // ----------------------------
   useEffect(() => {
