@@ -31,6 +31,7 @@ export default function WW2Globe() {
   const [date, setDate] = useState<Date>(new Date(1919, 0, 18));
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [texturesLoaded, setTexturesLoaded] = useState(false);
 
   const isMobile = useIsMobile();
 
@@ -54,6 +55,39 @@ export default function WW2Globe() {
   }, []);
 
   // ----------------------------
+  // 🌍 Texture URLs (absolute)
+  // ----------------------------
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const globeTexture = isMobile
+    ? `${baseUrl}/textures/earth-mobile.jpg`
+    : `${baseUrl}/textures/earth.jpg`;
+  const bumpTexture = `${baseUrl}/textures/earth-bump.jpg`;
+  const backgroundTexture = `${baseUrl}/textures/stars-bg.jpg`;
+
+  // ----------------------------
+  // 🧩 Preload textures before rendering
+  // ----------------------------
+  useEffect(() => {
+    let loaded = 0;
+    const total = isMobile ? 2 : 3; // globe + background (+ bump if desktop)
+    const onLoad = () => {
+      loaded++;
+      if (loaded >= total) setTexturesLoaded(true);
+    };
+
+    const preload = (src: string) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = onLoad;
+      img.onerror = onLoad;
+    };
+
+    preload(globeTexture);
+    preload(backgroundTexture);
+    if (!isMobile) preload(bumpTexture);
+  }, [globeTexture, bumpTexture, backgroundTexture, isMobile]);
+
+  // ----------------------------
   // 🌍 Configure renderer and POV
   // ----------------------------
   useEffect(() => {
@@ -61,7 +95,7 @@ export default function WW2Globe() {
 
     const renderer = globeRef.current.renderer?.();
     if (renderer) {
-      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); // reduce GPU load
+      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.antialias = !isMobile;
     }
 
@@ -117,16 +151,9 @@ export default function WW2Globe() {
   const markers = ww2Events.filter((e) => e.date === selectedDateString);
 
   // ----------------------------
-  // 🗺️ Globe textures (mobile optimization)
-  // ----------------------------
-  const globeTexture = isMobile
-    ? "/textures/earth-mobile.jpg" // ⚡ low-res version for phones
-    : "/textures/earth.jpg";
-
-  // ----------------------------
   // 🧱 Loading state
   // ----------------------------
-  if (!dimensions) {
+  if (!dimensions || !texturesLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
         Loading globe...
@@ -193,13 +220,13 @@ export default function WW2Globe() {
       {/* 🌍 The Globe */}
       {dimensions?.width > 0 && dimensions?.height > 0 && (
         <Globe
-          key={isMobile ? "mobile" : "desktop"} // force re-mount when switching
+          key={isMobile ? "mobile" : "desktop"}
           ref={globeRef}
           width={dimensions.width}
           height={dimensions.height}
           globeImageUrl={globeTexture}
-          bumpImageUrl="/textures/earth-bump.jpg"
-          backgroundImageUrl="/textures/stars-bg.jpg"
+          bumpImageUrl={isMobile ? undefined : bumpTexture}
+          backgroundImageUrl={backgroundTexture}
           pointsData={markers}
           pointAltitude={isMobile ? 0.05 : 0.1}
           pointColor={(d: any) => d.color || "white"}
