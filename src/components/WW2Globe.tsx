@@ -26,7 +26,7 @@ const Globe: any = dynamic(() => import("react-globe.gl"), { ssr: false });
 export default function WW2Globe() {
   const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
-  const [date, setDate] = useState<Date>(new Date(1939, 8, 1)); // Default: Sep 1, 1939
+  const [date, setDate] = useState<Date>(new Date(1919, 0, 18)); // Default: Jan 18, 1919
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
   const isMobile = useIsMobile();
 

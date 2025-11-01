@@ -34,8 +34,12 @@ export default function EventCard({ event, onClose }: EventCardProps) {
         />
       </div>
 
-      {/* Description */}
-      <p className="text-sm text-gray-300 mb-4">{event.description}</p>
+      {/* Paragraphs */}
+      <div className="max-h-48 overflow-y-auto mb-4">
+        <p className="text-sm text-gray-300 mb-2 mt-2">{event.paragraph1}</p>
+        <p className="text-sm text-gray-300 mb-2 mt-2">{event.paragraph2}</p>
+        <p className="text-sm text-gray-300 mb-2 mt-2">{event.paragraph3}</p>
+      </div>
     </div>
   );
 }
