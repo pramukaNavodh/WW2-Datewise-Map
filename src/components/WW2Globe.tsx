@@ -8,6 +8,18 @@ import "@/styles/calender.css";
 import { ww2Events, WW2Event } from "@/data/Events";
 import EventCard from "@/components/EventCard";
 
+// Simple hook for mobile detection (or use window.matchMedia)
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  return isMobile;
+};
+
 // Import globe dynamically (client only)
 const Globe: any = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -16,6 +28,7 @@ export default function WW2Globe() {
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [date, setDate] = useState<Date>(new Date(1939, 8, 1)); // Default: Sep 1, 1939
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
+  const isMobile = useIsMobile();
 
   // 🪟 Handle dynamic window resizing
   useEffect(() => {
@@ -32,19 +45,20 @@ export default function WW2Globe() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  //  Configure renderer & initial globe POV
+  // Configure renderer & initial globe POV (responsive zoom)
   useEffect(() => {
     if (!globeRef.current) return;
 
     const renderer = globeRef.current.renderer?.();
     if (renderer) {
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.antialias = true;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap for mobile perf
+      renderer.antialias = !isMobile; // Disable AA on mobile for speed
     }
 
-    // Set initial zoom/position
-    globeRef.current.pointOfView({ lat: 20, lng: 0, altitude: 1.5 }, 2000);
-  }, [dimensions]);
+    // Responsive initial position: Wider view on mobile
+    const altitude = isMobile ? 2.5 : 1.5;
+    globeRef.current.pointOfView({ lat: 20, lng: 0, altitude }, 2000);
+  }, [dimensions, isMobile]);
 
   // Buy Me a Coffee: Dynamic load with event dispatch
   useEffect(() => {
@@ -57,8 +71,8 @@ export default function WW2Globe() {
     script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
     script.setAttribute("data-id", "pramuka");
     script.setAttribute("data-description", "Support me on Buy me a coffee!");
-    script.setAttribute("data-message", "Thank you very much for your kind support!! 🥰");
-    script.setAttribute("data-color", "#FF5F5F");
+    script.setAttribute("data-message", "Do you like this project? What about a little donation?");
+    script.setAttribute("data-color", "#16a34a");
     script.setAttribute("data-position", "Left");
     script.setAttribute("data-x_margin", "18");
     script.setAttribute("data-y_margin", "18");
@@ -84,14 +98,14 @@ export default function WW2Globe() {
     };
   }, []); // Empty deps: Run once on mount
 
-  //  Filter markers by selected date (YYYY-MM-DD)
+  // Filter markers by selected date (YYYY-MM-DD)
   const selectedDateString = date.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
   const markers = ww2Events.filter((e) => e.date === selectedDateString);
 
   // loading screen
   if (!dimensions) {
     return (
-      <div className="flex items-center justify-center h-screen bg-black text-white text-xl">
+      <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
         Loading globe...
       </div>
     );
@@ -99,19 +113,19 @@ export default function WW2Globe() {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden"
+      className="fixed inset-0 overflow-hidden min-h-screen"
       style={{
         width: dimensions.width,
         height: dimensions.height,
       }}
     >
-      {/* 🔹 Site Title + Calendar (top left) */}
-      <div className="absolute top-6 left-6 z-50 flex flex-col gap-3">
-        <h1 className="text-white text-3xl font-bold tracking-wide drop-shadow-lg">
+      {/* 🔹 Site Title + Calendar (top left, stacked on mobile) */}
+      <div className="absolute top-4 left-4 right-4 sm:left-6 sm:right-auto z-50 flex flex-col gap-2 sm:gap-3 max-w-sm mx-auto sm:mx-0">
+        <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
           WW2 Date-wise Map
         </h1>
 
-        <div className="bg-gray-900/90 rounded-2xl p-3 shadow-lg">
+        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full">
           <Calendar
             onChange={(val) => {
               setDate(val as Date);
@@ -120,14 +134,16 @@ export default function WW2Globe() {
             value={date}
             minDate={new Date(1919, 0, 1)}
             maxDate={new Date(1950, 11, 31)}
-            className="text-white"
+            className="text-white w-full"
           />
         </div>
       </div>
 
-      {/* Event Card (top right) */}
+      {/* Event Card (top right, centered on mobile) */}
       {selectedEvent && (
-        <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        <div className="absolute top-4 right-4 sm:right-6 z-50 max-w-sm mx-auto sm:mx-0">
+          <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        </div>
       )}
 
       {/* 🌍 Globe */}
@@ -139,23 +155,25 @@ export default function WW2Globe() {
         bumpImageUrl="/textures/earth-bump.jpg"
         backgroundImageUrl="/textures/stars-bg.jpg"
         pointsData={markers}
-        pointAltitude={0.1}
+        pointAltitude={isMobile ? 0.05 : 0.1} // Smaller points on mobile
         pointColor={(d: any) => d.color || "white"}
         pointLabel={(d: any) => `${d.title} — ${d.date}`}
         onPointClick={(point: WW2Event) => setSelectedEvent(point)}
+        // Perf tweak: Lighter material on mobile
+        globeMaterial={isMobile ? { roughness: 1 } : undefined}
       />
 
-      {/* 🌍 Image Credits */}
-      <div className="absolute bottom-4 left-4 z-50 text-xs text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg">
-        Images ©{" "}
-          <a
-            href="https://planetpixelemporium.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
+      {/* 🌍 Image Credits (bottom-left on all screens) */}
+      <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
+      Images ©{" "}
+        <a
+          href="https://planetpixelemporium.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
           Planet Pixel Emporium
-          </a>{" "}
+        </a>{" "}
           & NASA
       </div>
     </div>

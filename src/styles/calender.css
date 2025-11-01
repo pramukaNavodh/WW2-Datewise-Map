@@ -29,3 +29,23 @@
   background-color: #16a34a;
   color: white;
 }
+
+/* Mobile Responsiveness: Touch-friendly adjustments for screens < 640px (Tailwind's 'sm' breakpoint) */
+@media (max-width: 640px) {
+  .react-calendar {
+    font-size: 0.875rem; /* Slightly smaller base font for better fit on narrow screens */
+    padding: 0.75rem; /* Reduce padding to save space without losing readability */
+  }
+  
+  .react-calendar__tile {
+    min-height: 44px; /* Ensures tappable size (iOS/Android touch target guideline) */
+    min-width: 44px;
+    padding: 8px 0; /* Adjust padding to fit the min dimensions */
+  }
+  
+  .react-calendar__navigation button {
+    min-height: 44px; /* Larger buttons for easier thumb taps */
+    min-width: 44px;
+    font-size: 0.875rem; /* Scale down slightly if needed */
+  }
+}
