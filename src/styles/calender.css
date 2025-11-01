@@ -7,11 +7,13 @@
   font-family: "Inter", sans-serif;
 }
 
+/* navigation buttons */
 .react-calendar__navigation button {
   color: white;
   font-size: 1rem;
 }
 
+/* day tiles */
 .react-calendar__tile {
   color: #e2e8f0;
   text-align: center;
@@ -20,32 +22,25 @@
   transition: background-color 0.2s ease;
 }
 
-.react-calendar__tile--now {
-  background-color: #334155;
-  color: #fff;
-}
+/* today & active */
+.react-calendar__tile--now   { background-color: #334155; color: #fff; }
+.react-calendar__tile--active{ background-color: #16a34a; color: white; }
 
-.react-calendar__tile--active {
-  background-color: #16a34a;
-  color: white;
-}
-
-/* Mobile Responsiveness: Touch-friendly adjustments for screens < 640px (Tailwind's 'sm' breakpoint) */
+/* ---------- MOBILE TOUCH TARGETS ---------- */
 @media (max-width: 640px) {
   .react-calendar {
-    font-size: 0.875rem; /* Slightly smaller base font for better fit on narrow screens */
-    padding: 0.75rem; /* Reduce padding to save space without losing readability */
+    font-size: 0.875rem;
+    padding: 0.75rem;
   }
-  
-  .react-calendar__tile {
-    min-height: 44px; /* Ensures tappable size (iOS/Android touch target guideline) */
-    min-width: 44px;
-    padding: 8px 0; /* Adjust padding to fit the min dimensions */
-  }
-  
+
+  .react-calendar__tile,
   .react-calendar__navigation button {
-    min-height: 44px; /* Larger buttons for easier thumb taps */
+    min-height: 44px;   /* Apple/Google guideline */
     min-width: 44px;
-    font-size: 0.875rem; /* Scale down slightly if needed */
+    padding: 8px 0;
+  }
+
+  .react-calendar__navigation button {
+    font-size: 0.875rem;
   }
 }

@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "WW2 Date-wise Map",
   description: "WW2 Datewise Map allows you to see locations of incidents related to the 2nd World War according to their date.",
+  viewport: "width=device-width, initial-scale=1",
   icons: {
   icon: [
     { url: '/favicon.ico', sizes: 'any' },

@@ -119,13 +119,14 @@ export default function WW2Globe() {
         height: dimensions.height,
       }}
     >
-      {/* 🔹 Site Title + Calendar (top left, stacked on mobile) */}
-      <div className="absolute top-4 left-4 right-4 sm:left-6 sm:right-auto z-50 flex flex-col gap-2 sm:gap-3 max-w-sm mx-auto sm:mx-0">
+      {/* 🔹 Site Title + Calendar (top left, compact on mobile) */}
+      <div className="absolute top-4 left-4 z-50 flex flex-col gap-2 max-w-xs">
         <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
           WW2 Date-wise Map
         </h1>
 
-        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full">
+        {/* Calendar wrapper – limited height + scroll */}
+        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[calc(100vh-12rem)] overflow-y-auto">
           <Calendar
             onChange={(val) => {
               setDate(val as Date);
@@ -139,9 +140,9 @@ export default function WW2Globe() {
         </div>
       </div>
 
-      {/* Event Card (top right, centered on mobile) */}
+      {/* Event Card (top right) */}
       {selectedEvent && (
-        <div className="absolute top-4 right-4 sm:right-6 z-50 max-w-sm mx-auto sm:mx-0">
+        <div className="absolute top-4 right-4 z-50 max-w-sm">
           <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
         </div>
       )}
@@ -161,11 +162,13 @@ export default function WW2Globe() {
         onPointClick={(point: WW2Event) => setSelectedEvent(point)}
         // Perf tweak: Lighter material on mobile
         globeMaterial={isMobile ? { roughness: 1 } : undefined}
+        // make sure the globe receives touch events behind the UI
+        htmlElementsData={[]}
       />
 
       {/* 🌍 Image Credits (bottom-left on all screens) */}
       <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
-      Images ©{" "}
+        Images ©{" "}
         <a
           href="https://planetpixelemporium.com/"
           target="_blank"
@@ -174,7 +177,7 @@ export default function WW2Globe() {
         >
           Planet Pixel Emporium
         </a>{" "}
-          & NASA
+        & NASA
       </div>
     </div>
   );
