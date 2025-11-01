@@ -113,20 +113,20 @@ export default function WW2Globe() {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden min-h-screen"
+      className="fixed inset-0 overflow-hidden"
       style={{
-        width: dimensions.width,
-        height: dimensions.height,
+      width: "100vw",
+      height: "100dvh", // dynamically accounts for browser UI on mobile
       }}
     >
       {/* 🔹 Site Title + Calendar (top left, compact on mobile) */}
-      <div className="absolute top-4 left-4 z-50 flex flex-col gap-2 max-w-xs">
+      <div className="absolute top-2 left-2 z-50 flex flex-col gap-2 w-[85vw] sm:w-auto sm:max-w-xs">
         <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
           WW2 Date-wise Map
         </h1>
 
         {/* Calendar wrapper – limited height + scroll */}
-        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[calc(100vh-12rem)] overflow-y-auto">
+        <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[70vh] overflow-y-auto">
           <Calendar
             onChange={(val) => {
               setDate(val as Date);
