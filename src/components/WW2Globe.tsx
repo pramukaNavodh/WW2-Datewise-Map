@@ -8,7 +8,9 @@ import "@/styles/calender.css";
 import { ww2Events, WW2Event } from "@/data/Events";
 import EventCard from "@/components/EventCard";
 
-// Simple hook for mobile detection (or use window.matchMedia)
+// ----------------------------
+// 📱 Mobile detection hook
+// ----------------------------
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -20,68 +22,69 @@ const useIsMobile = () => {
   return isMobile;
 };
 
-// Import globe dynamically (client only)
+// 🪐 Dynamic import for Globe (client-only)
 const Globe: any = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 export default function WW2Globe() {
   const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
-  const [date, setDate] = useState<Date>(new Date(1919, 0, 18)); // Default: Jan 18, 1919
+  const [date, setDate] = useState<Date>(new Date(1919, 0, 18));
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
-  const isMobile = useIsMobile();
-
-  // 👇 NEW: state for showing/hiding calendar on mobile
   const [showCalendar, setShowCalendar] = useState(false);
 
-  // 🪟 Handle dynamic window resizing
- useEffect(() => {
-  const updateSize = () => {
-    setDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
-  updateSize(); // initialize immediately
+  const isMobile = useIsMobile();
 
-  window.addEventListener("resize", updateSize);
-  window.addEventListener("orientationchange", updateSize); // mobile fix
+  // ----------------------------
+  // 🪟 Responsive screen tracking
+  // ----------------------------
+  useEffect(() => {
+    const updateSize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    window.addEventListener("orientationchange", updateSize);
+    return () => {
+      window.removeEventListener("resize", updateSize);
+      window.removeEventListener("orientationchange", updateSize);
+    };
+  }, []);
 
-  return () => {
-    window.removeEventListener("resize", updateSize);
-    window.removeEventListener("orientationchange", updateSize);
-  };
-}, []);
-
-  // Configure renderer & initial globe POV (responsive zoom)
+  // ----------------------------
+  // 🌍 Configure renderer and POV
+  // ----------------------------
   useEffect(() => {
     if (!globeRef.current) return;
 
     const renderer = globeRef.current.renderer?.();
     if (renderer) {
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap for mobile perf
-      renderer.antialias = !isMobile; // Disable AA on mobile for speed
+      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); // reduce GPU load
+      renderer.antialias = !isMobile;
     }
 
-    // Responsive initial position: Wider view on mobile
-    const altitude = isMobile ? 2.5 : 1.5;
+    const altitude = isMobile ? 2.6 : 1.5;
     globeRef.current.pointOfView({ lat: 20, lng: 0, altitude }, 2000);
   }, [dimensions, isMobile]);
 
-  // 👇 NEW: ensure globe re-renders properly after resize (especially on mobile Safari)
+  // ----------------------------
+  // 🔁 Re-render fix for Safari
+  // ----------------------------
   useEffect(() => {
     if (globeRef.current && dimensions) {
       setTimeout(() => {
-        if (globeRef.current.width) {
-          globeRef.current.refresh();
-        }
-      }, 300);
+        if (globeRef.current.refresh) globeRef.current.refresh();
+      }, 400);
     }
   }, [dimensions]);
 
-  // Buy Me a Coffee widget
+  // ----------------------------
+  // ☕ Buy Me a Coffee widget
+  // ----------------------------
   useEffect(() => {
     if (document.getElementById("bmc-wbtn")) return;
-
     const script = document.createElement("script");
     script.setAttribute("data-name", "BMC-Widget");
     script.setAttribute("data-cfasync", "false");
@@ -99,25 +102,30 @@ export default function WW2Globe() {
       evt.initEvent("DOMContentLoaded", false, false);
       window.dispatchEvent(evt);
     };
-
     document.body.appendChild(script);
-
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      if (script.parentNode) script.parentNode.removeChild(script);
       const widget = document.getElementById("bmc-wbtn");
-      if (widget && widget.parentNode) {
-        widget.parentNode.removeChild(widget);
-      }
+      if (widget && widget.parentNode) widget.parentNode.removeChild(widget);
     };
   }, []);
 
-  // Filter markers by selected date (YYYY-MM-DD)
+  // ----------------------------
+  // 🎯 Event filtering
+  // ----------------------------
   const selectedDateString = date.toLocaleDateString("en-CA");
   const markers = ww2Events.filter((e) => e.date === selectedDateString);
 
-  // loading screen
+  // ----------------------------
+  // 🗺️ Globe textures (mobile optimization)
+  // ----------------------------
+  const globeTexture = isMobile
+    ? "/textures/earth-mobile.jpg" // ⚡ low-res version for phones
+    : "/textures/earth.jpg";
+
+  // ----------------------------
+  // 🧱 Loading state
+  // ----------------------------
   if (!dimensions) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
@@ -126,6 +134,9 @@ export default function WW2Globe() {
     );
   }
 
+  // ----------------------------
+  // 🌍 Main Render
+  // ----------------------------
   return (
     <div
       className="fixed inset-0 overflow-hidden"
@@ -134,14 +145,13 @@ export default function WW2Globe() {
         height: `${window.innerHeight}px`,
       }}
     >
-      {/* 🔹 Site Title + Calendar (top left, compact on mobile) */}
+      {/* 📅 Title + Calendar */}
       {!isMobile || showCalendar ? (
         <div className="absolute top-2 left-2 z-50 flex flex-col gap-2 w-[85vw] sm:w-auto sm:max-w-xs">
           <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
             WW2 Date-wise Map
           </h1>
 
-          {/* Calendar wrapper – limited height + scroll */}
           <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[70vh] overflow-y-auto">
             <Calendar
               onChange={(val) => {
@@ -155,7 +165,6 @@ export default function WW2Globe() {
             />
           </div>
 
-          {/* Close button only for mobile */}
           {isMobile && (
             <button
               onClick={() => setShowCalendar(false)}
@@ -174,31 +183,34 @@ export default function WW2Globe() {
         </button>
       )}
 
-      {/* Event Card (top right) */}
+      {/* 📜 Event Card */}
       {selectedEvent && (
         <div className="absolute top-4 right-4 z-50 max-w-sm">
           <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
         </div>
       )}
 
-      {/* 🌍 Globe */}
-      <Globe
-        ref={globeRef}
-        width={dimensions.width}
-        height={dimensions.height}
-        globeImageUrl="/textures/earth.jpg"
-        bumpImageUrl="/textures/earth-bump.jpg"
-        backgroundImageUrl="/textures/stars-bg.jpg"
-        pointsData={markers}
-        pointAltitude={isMobile ? 0.05 : 0.1}
-        pointColor={(d: any) => d.color || "white"}
-        pointLabel={(d: any) => `${d.title} — ${d.date}`}
-        onPointClick={(point: WW2Event) => setSelectedEvent(point)}
-        globeMaterial={isMobile ? { roughness: 1 } : undefined}
-        htmlElementsData={[]}
-      />
+      {/* 🌍 The Globe */}
+      {dimensions?.width > 0 && dimensions?.height > 0 && (
+        <Globe
+          key={isMobile ? "mobile" : "desktop"} // force re-mount when switching
+          ref={globeRef}
+          width={dimensions.width}
+          height={dimensions.height}
+          globeImageUrl={globeTexture}
+          bumpImageUrl="/textures/earth-bump.jpg"
+          backgroundImageUrl="/textures/stars-bg.jpg"
+          pointsData={markers}
+          pointAltitude={isMobile ? 0.05 : 0.1}
+          pointColor={(d: any) => d.color || "white"}
+          pointLabel={(d: any) => `${d.title} — ${d.date}`}
+          onPointClick={(point: WW2Event) => setSelectedEvent(point)}
+          globeMaterial={isMobile ? { roughness: 1 } : undefined}
+          htmlElementsData={[]}
+        />
+      )}
 
-      {/* 🌍 Image Credits */}
+      {/* 🖼️ Image Credits */}
       <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
         Images ©{" "}
         <a
