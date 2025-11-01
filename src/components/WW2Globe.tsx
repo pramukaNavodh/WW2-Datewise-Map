@@ -34,19 +34,23 @@ export default function WW2Globe() {
   const [showCalendar, setShowCalendar] = useState(false);
 
   // 🪟 Handle dynamic window resizing
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+ useEffect(() => {
+  const updateSize = () => {
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+  updateSize(); // initialize immediately
 
-    handleResize(); // initialize once
-    window.addEventListener("resize", handleResize);
+  window.addEventListener("resize", updateSize);
+  window.addEventListener("orientationchange", updateSize); // mobile fix
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  return () => {
+    window.removeEventListener("resize", updateSize);
+    window.removeEventListener("orientationchange", updateSize);
+  };
+}, []);
 
   // Configure renderer & initial globe POV (responsive zoom)
   useEffect(() => {
@@ -127,7 +131,7 @@ export default function WW2Globe() {
       className="fixed inset-0 overflow-hidden"
       style={{
         width: "100vw",
-        height: "100dvh", // dynamically accounts for browser UI on mobile
+        height: `${window.innerHeight}px`,
       }}
     >
       {/* 🔹 Site Title + Calendar (top left, compact on mobile) */}
@@ -166,7 +170,7 @@ export default function WW2Globe() {
           onClick={() => setShowCalendar(true)}
           className="absolute top-2 left-2 bg-gray-800 text-white rounded-full p-2 z-50 shadow-md"
         >
-          📅
+          📅 View Calendar
         </button>
       )}
 
