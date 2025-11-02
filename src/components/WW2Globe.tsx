@@ -133,8 +133,8 @@ export default function WW2Globe() {
             setIsCalendarOpen(false);
           }}
           value={date}
-          minDate={new Date(1919, 0, 1)}
-          maxDate={new Date(1950, 11, 31)}
+          minDate={new Date(1800, 0, 1)}
+          maxDate={new Date(2025, 11, 31)}
           tileContent={({ date, view }) => {
             if (view !== "month") return null;
             const str = date.toLocaleDateString("en-CA");
