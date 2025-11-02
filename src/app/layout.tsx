@@ -17,14 +17,14 @@ export const metadata: Metadata = {
   description: "WW2 Datewise Map allows you to see locations of incidents related to the 2nd World War according to their date.",
   viewport: "width=device-width, initial-scale=1",
   icons: {
-  icon: [
-    { url: '/favicon.ico', sizes: 'any' },
-    { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-    { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-  ],
-  apple: '/apple-touch-icon.png',
-  shortcut: '/favicon-16x16.png',  // For Windows
-},
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon-16x16.png',  // For Windows
+  },
 };
 
 export default function RootLayout({
@@ -34,6 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Disable Grammarly (and similar extensions) to prevent hydration mismatches */}
+        <meta httpEquiv="X-Grammarly-Disabled" content="true" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -1,28 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "@/styles/calender.css";
 import { ww2Events, WW2Event } from "@/data/Events";
 import EventCard from "@/components/EventCard";
+import { Menu, X } from "lucide-react";
+import "@/styles/bmc-mobile.css";
 
-// ----------------------------
-// 📱 Mobile detection hook
-// ----------------------------
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-  return isMobile;
-};
-
-// 🪐 Dynamic import for Globe (client-only)
 const Globe: any = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 export default function WW2Globe() {
@@ -30,126 +17,64 @@ export default function WW2Globe() {
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [date, setDate] = useState<Date>(new Date(1919, 0, 18));
   const [selectedEvent, setSelectedEvent] = useState<WW2Event | null>(null);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [texturesLoaded, setTexturesLoaded] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const isMobile = useIsMobile();
-
-  // ----------------------------
-  // 🪟 Responsive screen tracking
-  // ----------------------------
+  // Resize handler
   useEffect(() => {
-    const updateSize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+    const handleResize = () => {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
     };
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    window.addEventListener("orientationchange", updateSize);
-    return () => {
-      window.removeEventListener("resize", updateSize);
-      window.removeEventListener("orientationchange", updateSize);
-    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ----------------------------
-  // 🌍 Texture URLs (absolute)
-  // ----------------------------
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const globeTexture = isMobile
-    ? `${baseUrl}/textures/earth-mobile.jpg`
-    : `${baseUrl}/textures/earth.jpg`;
-  const bumpTexture = `${baseUrl}/textures/earth-bump.jpg`;
-  const backgroundTexture = `${baseUrl}/textures/stars-bg.jpg`;
-
-  // ----------------------------
-  // 🧩 Preload textures before rendering
-  // ----------------------------
+  // Globe config
   useEffect(() => {
-    let loaded = 0;
-    const total = isMobile ? 2 : 3; // globe + background (+ bump if desktop)
-    const onLoad = () => {
-      loaded++;
-      if (loaded >= total) setTexturesLoaded(true);
-    };
+    if (!globeRef.current || !dimensions) return;
 
-    const preload = (src: string) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = onLoad;
-      img.onerror = onLoad;
-    };
+    const controls = globeRef.current.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.3;
 
-    preload(globeTexture);
-    preload(backgroundTexture);
-    if (!isMobile) preload(bumpTexture);
-  }, [globeTexture, bumpTexture, backgroundTexture, isMobile]);
-
-  // ----------------------------
-  // 🌍 Force translations fallback for Globe
-  // ----------------------------
-  useEffect(() => {
-    if (typeof window !== "undefined" && (Globe as any).registerClientLocalizations) {
-      try {
-        (Globe as any).registerClientLocalizations({ translations: {} });
-      } catch (err) {
-        console.warn("Globe localization patch failed:", err);
-      }
-    }
-  }, []);
-
-  // ----------------------------
-  // 🌍 Configure renderer and POV
-  // ----------------------------
-  useEffect(() => {
-    if (!globeRef.current) return;
-
-    const renderer = globeRef.current.renderer?.();
-    if (renderer) {
-      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
-      renderer.antialias = !isMobile;
-    }
-
-    const altitude = isMobile ? 2.6 : 1.5;
-    globeRef.current.pointOfView({ lat: 20, lng: 0, altitude }, 2000);
-  }, [dimensions, isMobile]);
-
-  // ----------------------------
-  // 🔁 Re-render fix for Safari
-  // ----------------------------
-  useEffect(() => {
-    if (globeRef.current && dimensions) {
-      setTimeout(() => {
-        if (globeRef.current.refresh) globeRef.current.refresh();
-      }, 400);
-    }
+    globeRef.current.pointOfView({ lat: 39, lng: 34, altitude: 2.5 }, 0);
   }, [dimensions]);
 
-  // ----------------------------
-  // ☕ Buy Me a Coffee widget
-  // ----------------------------
+  // Close calendar on Escape
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedEvent(null);
+        setIsCalendarOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  // Buy Me a Coffee Widget – BOTTOM-RIGHT
   useEffect(() => {
     if (document.getElementById("bmc-wbtn")) return;
+
     const script = document.createElement("script");
     script.setAttribute("data-name", "BMC-Widget");
     script.setAttribute("data-cfasync", "false");
     script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
     script.setAttribute("data-id", "pramuka");
     script.setAttribute("data-description", "Support me on Buy me a coffee!");
-    script.setAttribute("data-message", "Do you like this project? What about a little donation?");
-    script.setAttribute("data-color", "#16a34a");
-    script.setAttribute("data-position", "Left");
+    script.setAttribute("data-message", "Thank you very much for your kind support!!");
+    script.setAttribute("data-color", "#FF5F5F");
+    script.setAttribute("data-position", "Right");   // ← CHANGED
     script.setAttribute("data-x_margin", "18");
     script.setAttribute("data-y_margin", "18");
 
-    script.onload = function () {
-      const evt = document.createEvent("Event");
-      evt.initEvent("DOMContentLoaded", false, false);
+    script.onload = () => {
+      const evt = new Event("DOMContentLoaded");
       window.dispatchEvent(evt);
     };
+
     document.body.appendChild(script);
+
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
       const widget = document.getElementById("bmc-wbtn");
@@ -157,101 +82,128 @@ export default function WW2Globe() {
     };
   }, []);
 
-  // ----------------------------
-  // 🎯 Event filtering
-  // ----------------------------
   const selectedDateString = date.toLocaleDateString("en-CA");
-  const markers = ww2Events.filter((e) => e.date === selectedDateString);
+  const markers = useMemo(
+    () => ww2Events.filter((e) => e.date === selectedDateString),
+    [selectedDateString]
+  );
 
-  // ----------------------------
-  // 🧱 Loading state
-  // ----------------------------
-  if (!dimensions || !texturesLoaded) {
+  if (!dimensions) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
+      <div className="flex items-center justify-center h-screen bg-black text-white text-xl">
         Loading globe...
       </div>
     );
   }
 
-  // ----------------------------
-  // 🌍 Main Render
-  // ----------------------------
   return (
     <div
       className="fixed inset-0 overflow-hidden"
-      style={{
-        width: "100vw",
-        height: `${window.innerHeight}px`,
-      }}
+      style={{ width: dimensions.width, height: dimensions.height }}
     >
-      {/* 📅 Title + Calendar */}
-      {!isMobile || showCalendar ? (
-        <div className="absolute top-2 left-2 z-50 flex flex-col gap-2 w-[85vw] sm:w-auto sm:max-w-xs">
-          <h1 className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg text-center sm:text-left">
-            WW2 Date-wise Map
-          </h1>
+      {/* ==================== TITLE (Smaller on Mobile) ==================== */}
+      <div className="absolute top-4 left-4 z-50 pointer-events-none">
+        <h1 className="text-white text-xl md:text-3xl font-bold tracking-wide drop-shadow-lg whitespace-nowrap">
+          WW2 Date-wise Map
+        </h1>
+      </div>
 
-          <div className="bg-gray-900/90 rounded-2xl p-2 sm:p-3 shadow-lg w-full max-h-[70vh] overflow-y-auto">
-            <Calendar
-              onChange={(val) => {
-                setDate(val as Date);
-                setSelectedEvent(null);
-              }}
-              value={date}
-              minDate={new Date(1919, 0, 1)}
-              maxDate={new Date(1950, 11, 31)}
-              className="text-white w-full"
-            />
-          </div>
+      {/* ==================== MOBILE CALENDAR TOGGLE ==================== */}
+      <button
+        onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+        className="absolute top-12 left-4 z-50 md:hidden bg-gray-900/90 p-3 rounded-full shadow-lg transition-transform hover:scale-110"
+        aria-label="Toggle calendar"
+      >
+        {isCalendarOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+      </button>
 
-          {isMobile && (
-            <button
-              onClick={() => setShowCalendar(false)}
-              className="bg-gray-700 text-white rounded-lg mt-2 p-2 text-sm"
-            >
-              Close
-            </button>
-          )}
-        </div>
-      ) : (
-        <button
-          onClick={() => setShowCalendar(true)}
-          className="absolute top-2 left-2 bg-gray-800 text-white rounded-full p-2 z-50 shadow-md"
-        >
-          📅 View Calendar
-        </button>
-      )}
-
-      {/* 📜 Event Card */}
-      {selectedEvent && (
-        <div className="absolute top-4 right-4 z-50 max-w-sm">
-          <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
-        </div>
-      )}
-
-      {/* 🌍 The Globe */}
-      {dimensions?.width > 0 && dimensions?.height > 0 && (
-        <Globe
-          key={isMobile ? "mobile" : "desktop"}
-          ref={globeRef}
-          width={dimensions.width}
-          height={dimensions.height}
-          globeImageUrl={globeTexture}
-          bumpImageUrl={isMobile ? undefined : bumpTexture}
-          backgroundImageUrl={backgroundTexture}
-          pointsData={markers}
-          pointAltitude={isMobile ? 0.05 : 0.1}
-          pointColor={(d: any) => d.color || "white"}
-          pointLabel={(d: any) => `${d.title} — ${d.date}`}
-          onPointClick={(point: WW2Event) => setSelectedEvent(point)}
-          globeMaterial={isMobile ? { roughness: 1 } : undefined}
-          htmlElementsData={[]}
+      {/* ==================== CALENDAR (Lower z-index, no title overlap) ==================== */}
+      <div
+        className={`
+          absolute top-20 left-4 z-30 bg-gray-900/95 rounded-2xl p-4 shadow-xl transition-all duration-300
+          md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-16 md:z-40
+          ${isCalendarOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "-translate-x-full opacity-0 pointer-events-none"}
+          md:max-w-xs w-80
+        `}
+      >
+        <Calendar
+          onChange={(val) => {
+            setDate(val as Date);
+            setSelectedEvent(null);
+            setIsCalendarOpen(false);
+          }}
+          value={date}
+          minDate={new Date(1919, 0, 1)}
+          maxDate={new Date(1950, 11, 31)}
+          tileContent={({ date, view }) => {
+            if (view !== "month") return null;
+            const str = date.toLocaleDateString("en-CA");
+            const count = ww2Events.filter((e) => e.date === str).length;
+            if (count === 0) return null;
+            return (
+              <div className="flex justify-center -mt-1">
+                <span className="bg-red-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {count}
+                </span>
+              </div>
+            );
+          }}
         />
+      </div>
+
+      {/* ==================== EVENT CARD ==================== */}
+      {selectedEvent && (
+        <div
+          className={`
+            fixed z-50 flex items-start justify-center p-4
+            top-20 left-4 w-[calc(100%-2rem)] max-w-md
+            md:top-6 md:right-6 md:left-auto md:w-80
+          `}
+        >
+          <div
+            className="fixed inset-0 bg-black/70 md:hidden"
+            onClick={() => setSelectedEvent(null)}
+          />
+          <div className="relative w-full md:w-auto">
+            <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+          </div>
+        </div>
       )}
 
-      {/* 🖼️ Image Credits */}
-      <div className="absolute bottom-4 left-4 z-50 text-xs sm:text-sm text-gray-300 bg-gray-900/60 px-3 py-2 rounded-lg text-center max-w-xs">
+      {/* ==================== GLOBE ==================== */}
+      <Globe
+        ref={globeRef}
+        width={dimensions.width}
+        height={dimensions.height}
+        globeImageUrl="/textures/earth.jpg"
+        bumpImageUrl="/textures/earth-bump.jpg"
+        backgroundImageUrl="/textures/stars-bg.jpg"
+        pointsData={markers}
+        pointAltitude={0.1}
+        pointColor={() => "#ff3333"}
+        pointLabel={(d: any) => `${d.title} — ${d.date}`}
+        onPointClick={(point: WW2Event) => {
+          setSelectedEvent(point);
+          globeRef.current.pointOfView(
+            { lat: point.lat, lng: point.lng, altitude: 0.8 },
+            1000
+          );
+        }}
+        htmlElementsData={markers}
+        htmlElement={(d: any) => {
+          const el = document.createElement("div");
+          el.innerHTML = `<div class="pulse-marker"></div>`;
+          el.style.cursor = "pointer";
+          el.onclick = () => {
+            setSelectedEvent(d);
+            globeRef.current.pointOfView({ lat: d.lat, lng: d.lng, altitude: 0.8 }, 1000);
+          };
+          return el;
+        }}
+      />
+
+      {/* ==================== IMAGE CREDITS (Smaller on Mobile) ==================== */}
+      <div className="absolute bottom-4 left-4 z-40 text-[10px] md:text-xs text-gray-300 bg-gray-900/60 px-2 py-1 md:px-3 md:py-2 rounded-lg">
         Images ©{" "}
         <a
           href="https://planetpixelemporium.com/"

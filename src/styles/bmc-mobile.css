@@ -1,0 +1,12 @@
+/* styles/bmc-mobile.css */
+#bmc-wbtn {
+  transform: scale(1);
+  transform-origin: bottom right;   /* ← CHANGED */
+  transition: transform 0.2s ease;
+}
+
+@media (max-width: 767px) {
+  #bmc-wbtn {
+    transform: scale(0.70);
+  }
+}
