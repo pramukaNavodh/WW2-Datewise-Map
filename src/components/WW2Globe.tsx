@@ -62,9 +62,9 @@ export default function WW2Globe() {
     script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
     script.setAttribute("data-id", "pramuka");
     script.setAttribute("data-description", "Support me on Buy me a coffee!");
-    script.setAttribute("data-message", "Thank you very much for your kind support!!");
-    script.setAttribute("data-color", "#FF5F5F");
-    script.setAttribute("data-position", "Right");   // ← CHANGED
+    script.setAttribute("data-message", "Do you like this project? What about a little donation?");
+    script.setAttribute("data-color", "#17a34a");
+    script.setAttribute("data-position", "Right");   
     script.setAttribute("data-x_margin", "18");
     script.setAttribute("data-y_margin", "18");
 
