@@ -191,7 +191,7 @@ export const ww2Events: WW2Event[] = [
   {
     lat: 38.90772,
     lng: -77.03893,
-    title: "The United States’ Declaration of War on Japan",
+    title: "The United  States’ Declaration of War on Japan",
     paragraph1:"The United States’ declaration of war on Japan on December 8, 1941 was a direct and immediate response to the surprise attack on Pearl Harbor the previous day. The shocking devastation in Hawaii—destroyed battleships, ruined airfields, and thousands of American casualties—left no doubt in the minds of American leaders or citizens that the nation must enter the global conflict. President Franklin D. Roosevelt addressed Congress in a powerful speech now famously known as the “Day of Infamy” speech, condemning Japan’s sudden aggression and calling for decisive action.",
     paragraph2:"Congress responded swiftly and overwhelmingly. Within hours of Roosevelt’s address, both the Senate and the House of Representatives approved the declaration of war, with only a single dissenting vote in the House. The declaration marked the end of American neutrality and signaled the beginning of the United States’ full participation in World War II. The decision unified the American public, who rallied behind the military effort with unprecedented patriotism and determination.",
     paragraph3:"This act transformed the United States into a major force in the global conflict and set in motion massive industrial and military mobilization. The declaration of war on Japan also triggered subsequent declarations from Germany and Italy against the U.S., fully committing America to the Allied cause and shaping the future of the twentieth century.",
