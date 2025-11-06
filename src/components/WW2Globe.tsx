@@ -29,7 +29,7 @@ export default function WW2Globe() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Globe configuration
+  // Globe setup
   useEffect(() => {
     if (!globeRef.current || !dimensions) return;
     const controls = globeRef.current.controls();
@@ -38,7 +38,7 @@ export default function WW2Globe() {
     globeRef.current.pointOfView({ lat: 39, lng: 34, altitude: 2.5 }, 0);
   }, [dimensions]);
 
-  // Close calendar on Escape
+  // Close on ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -50,7 +50,7 @@ export default function WW2Globe() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // Buy Me a Coffee widget
+  // Buy Me a Coffee
   useEffect(() => {
     if (document.getElementById("bmc-wbtn")) return;
     const script = document.createElement("script");
@@ -136,12 +136,14 @@ export default function WW2Globe() {
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ width: dimensions.width, height: dimensions.height }}>
+      {/* TITLE */}
       <div className="absolute top-4 left-4 z-50 pointer-events-none">
         <h1 className="text-white text-xl md:text-3xl font-bold tracking-wide drop-shadow-lg whitespace-nowrap">
           WW2 Date-wise Map
         </h1>
       </div>
 
+      {/* CALENDAR TOGGLE (Mobile) */}
       <button
         onClick={() => setIsCalendarOpen(!isCalendarOpen)}
         className="absolute top-12 left-4 z-50 md:hidden bg-gray-900/90 p-3 rounded-full shadow-lg transition-transform hover:scale-110"
@@ -150,7 +152,7 @@ export default function WW2Globe() {
         {isCalendarOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
       </button>
 
-      {/* Calendar + Navigation */}
+      {/* CALENDAR */}
       <div
         className={`
           absolute top-20 left-4 z-30 bg-gray-900/95 rounded-2xl p-4 shadow-xl transition-all duration-300
@@ -182,29 +184,9 @@ export default function WW2Globe() {
             );
           }}
         />
-
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={goToPreviousIncident}
-            disabled={!hasPrev}
-            className={`bg-gray-800 text-white text-sm px-3 py-2 rounded-lg transition ${
-              !hasPrev ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-700"
-            }`}
-          >
-            ← Previous Incident
-          </button>
-          <button
-            onClick={goToNextIncident}
-            disabled={!hasNext}
-            className={`bg-gray-800 text-white text-sm px-3 py-2 rounded-lg transition ${
-              !hasNext ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-700"
-            }`}
-          >
-            Next Incident →
-          </button>
-        </div>
       </div>
 
+      {/* EVENT CARD */}
       {selectedEvent && (
         <div
           className={`fixed z-50 flex items-start justify-center p-4 top-20 left-4 w-[calc(100%-2rem)] max-w-md md:top-6 md:right-6 md:left-auto md:w-80`}
@@ -216,6 +198,7 @@ export default function WW2Globe() {
         </div>
       )}
 
+      {/* GLOBE */}
       <Globe
         ref={globeRef}
         width={dimensions.width}
@@ -244,7 +227,33 @@ export default function WW2Globe() {
         }}
       />
 
-      <div className="absolute bottom-4 left-4 z-40 text-[10px] md:text-xs text-gray-300 bg-gray-900/60 px-2 py-1 md:px-3 md:py-2 rounded-lg">
+      {/* FLOATING NAVIGATION BUTTONS (BOTTOM CENTER) */}
+      <div className="absolute bottom-12 md:bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+        <button
+          onClick={goToPreviousIncident}
+          disabled={!hasPrev}
+          className={`bg-gray-900/90 text-white text-xs md:text-sm md:px-4 md:py-2 px-2 py-1.5 rounded-md transition ${
+          !hasPrev ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-700"
+          }`}
+        >
+          <span className="hidden md:inline">← Previous Incident</span>
+          <span className="md:hidden text-base">←</span>
+        </button>
+
+        <button
+          onClick={goToNextIncident}
+          disabled={!hasNext}
+          className={`bg-gray-900/90 text-white text-xs md:text-sm md:px-4 md:py-2 px-2 py-1.5 rounded-md transition ${
+          !hasNext ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-700"
+          }`}
+        >
+          <span className="hidden md:inline">Next Incident →</span>
+          <span className="md:hidden text-base">→</span>
+        </button>
+      </div>
+
+      {/* CREDITS */}
+      <div className="absolute bottom-4 left-4 z-40 text-[10px] md:text-xs text-gray-300 bg-gray-900/90 px-2 py-1 md:px-3 md:py-2 rounded-lg">
         Images ©{" "}
         <a href="https://planetpixelemporium.com/" target="_blank" rel="noopener noreferrer" className="underline">
           Planet Pixel Emporium
