@@ -9,6 +9,9 @@ export interface WW2Event {
   image: string;
   date: string; // use "YYYY-MM-DD" format
   color?: string;
+  refImage?: string;
+  refLink?:string;
+  refText?:string;
 }
 
 export const ww2Events: WW2Event[] = [
@@ -22,6 +25,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/paris_peace_conference.jpg",
     date: "1919-01-18",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Paris_Peace_Conference_(1919%E2%80%931920)",
+    refText:"Wikipedia",
   },
   {
     lat: 48.80486,
@@ -33,6 +39,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/treatyversailles.jpg",
     date: "1919-06-28",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Treaty_of_Versailles",
+    refText:"Wikipedia",
   },
   {
     lat: 48.86239,
@@ -44,6 +53,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/est_league_of_nations.jpg",
     date: "1920-01-10",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/League_of_Nations",
+    refText:"Wikipedia",
   },
   {
     lat: 48.13518,
@@ -55,6 +67,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlertojail.png",
     date: "1923-11-11",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Beer_Hall_Putsch",
+    refText:"Wikipedia",
   },
   {
     lat: 48.14779,
@@ -66,6 +81,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlersentenced.jpeg",
     date: "1924-04-01",
     color: "red",
+    refImage:"/images/logos/history.com.jpg",
+    refLink:"https://www.history.com/this-day-in-history/april-1/beer-hall-putsch-secures-hitlers-rise-to-power",
+    refText:"HISTORY",
   },
   {
     lat: 48.05676,
@@ -77,6 +95,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlerreleased.jpg",
     date: "1924-12-20",
     color: "red",
+    refImage:"/images/logos/TheHistoryPage.png",
+    refLink:"https://www.historyplace.com/worldwar2/riseofhitler/new.htm",
+    refText:"The History Place",
   },
   {
     lat: 48.13352,
@@ -88,6 +109,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/reastblishmentNazi.jpeg",
     date: "1925-02-27",
     color: "red",
+    refImage:"/images/logos/BBC.jpg",
+    refLink:"https://www.bbc.co.uk/bitesize/guides/z3bp82p/revision/4",
+    refText:"BBC",
   },
   {
     lat: 48.13352,
@@ -99,6 +123,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/ssestablishment.jpg",
     date: "1925-04-04",
     color: "red",
+    refImage:"/images/logos/EBSCO.jpeg",
+    refLink:"https://www.ebsco.com/research-starters/history/schutzstaffel-ss",
+    refText:"EBSCO",
   },
   {
     lat: 48.13352,
@@ -110,6 +137,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlerrenounceAustrCtizen.png",
     date: "1925-04-07",
     color: "red",
+    refImage:"/images/logos/HitlerArchive.png",
+    refLink:"https://www.hitler-archive.com/photo.php?p=8521bnx9",
+    refText:"HITLER ARCHIVE",
   },
   {
     lat: 49.89711,
@@ -121,6 +151,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/BambergConference.jpg",
     date: "1926-02-14",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Bamberg_Conference",
+    refText:"Wikipedia",
   },
   {
     lat: 48.12926,
@@ -143,6 +176,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/firstElectionofHitler.jpeg",
     date: "1928-05-20",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/1928_German_federal_election",
+    refText:"Wikipedia",
   },
   {
     lat: 40.70617,
@@ -154,6 +190,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/WallStreetCrash.jpeg",
     date: "1929-10-29",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Wall_Street_crash_of_1929",
+    refText:"Wikipedia",  
   },
   {
     lat: 55.75623,
@@ -165,6 +204,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/stalinpresident.jpg",
     date: "1929-01-13",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Joseph_Stalin%27s_rise_to_power",
+    refText:"Wikipedia",
   },
   {
     lat: 52.51860,
@@ -187,6 +229,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/mukden.jpg",
     date: "1931-09-18",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Mukden_incident",
+    refText:"Wikipedia",
   },
   {
     lat: 52.26662,
@@ -209,6 +254,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/1932germanElection.jpg",
     date: "1932-03-13",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/1932_German_presidential_election",
+    refText:"Wikipedia",
   },
   {
     lat: 52.51860,
@@ -220,7 +268,7 @@ export const ww2Events: WW2Event[] = [
     image: "/images/1932julyelection.jpg",
     date: "1932-07-31",
     color: "red",
-  },
+  }, 
   {
     lat: 52.51860,
     lng: 13.37613,
@@ -242,17 +290,23 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlerbecamechancellor.jpg",
     date: "1933-01-30",
     color: "red",
+    refImage:"/images/logos/historyPod.jpg",
+    refLink:"https://www.youtube.com/watch?v=u_0KS4CUMcQ",
+    refText:"History Pod",
   },
   {
     lat: 36.41426,
     lng: 138.78839,
-    title: "Japan's Withdraw from League of Nations",
+    title: "Japan's Withdrawal from League of Nations",
     paragraph1:"Japan’s withdrawal from the League of Nations in 1933 was a defining moment that highlighted the weakening authority of the League and the rising tide of militarism in the lead-up to the Second World War. The decision came after the League condemned Japan’s actions in Manchuria, following the Mukden Incident of 1931. The Lytton Commission, appointed by the League, concluded that Japan had acted aggressively and unjustifiably in occupying Manchuria and establishing the puppet state of Manchukuo. Rather than comply with international pressure or reverse its expansion, Japan chose to defend its actions and assert national pride and strategic interests.",
     paragraph2:"On March 27, 1933, Japan formally announced its exit from the League, signaling its rejection of collective diplomacy and its commitment to independent imperial ambitions. This withdrawal exposed the League’s inability to enforce decisions against powerful nations, encouraged further aggression by other authoritarian states, and marked Japan’s increasing isolation from Western powers, setting the stage for its future wartime expansion in Asia.",
     paragraph3:"",
     image: "/images/japan_withdrawal_lg_of_ntns.jpg",
     date: "1933-03-27",
     color: "red",
+    refImage:"/images/logos/EBSCO.jpeg",
+    refLink:"https://www.ebsco.com/research-starters/history/japan-withdraws-league-nations",
+    refText:"EBSCO",
   },
   {
     lat: 14.16271,
@@ -264,6 +318,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/italian_invasion_adwa.jpeg",
     date: "1935-10-03",
     color: "red",
+    refImage:"/images/logos/historyClass.jpg",
+    refLink:"https://youtu.be/RNAq3PBWhc4?si=eia0zV8exqybuDPl",
+    refText:"History Class",
   },
   {
     lat: 41.89535,
@@ -297,6 +354,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/italy_attacked_red_cross.jpg",
     date: "1935-12-30",
     color: "red",
+    refImage:"/images/logos/ICRC.jpg",
+    refLink:"https://blogs.icrc.org/cross-files/the-cross-in-the-crosshairs-a-photographic-record-of-the-bombing-of-red-cross-field-hospitals-during-the-second-italo-ethiopian-war/#:~:text=20%20Red%20Cross%20and%20Red%20Crescent%20field,by%20the%20air%20force%20of%20fascist%20Italy.",
+    refText:"ICRC",
   },
   {
     lat: 8.86217,
@@ -308,6 +368,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/Haile_Selassie_I_departed_Ethiopia.jpg",
     date: "1936-05-02",
     color: "red",
+    refImage:"/images/logos/rfi.png",
+    refLink:"https://www.rfi.fr/en/africa/20240912-ethiopia-s-broken-crown-the-fall-of-haile-selassie-50-years-on",
+    refText:"R F I",
   },
   {
     lat: 55.75760,
@@ -319,6 +382,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/moscowpurge.jpg",
     date: "1936-08-19",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Trial_of_the_Sixteen",
+    refText:"Wikipedia",
   },
   {
     lat: 55.75760,
@@ -330,6 +396,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/Molotov–Ribbentrop Pact.jpg",
     date: "1939-08-23",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Molotov%E2%80%93Ribbentrop_Pact",
+    refText:"Wikipedia",
   },
   {
     lat: 51.221010,
@@ -341,6 +410,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/german_invasion_poland.jpeg",
     date: "1939-09-01",
     color: "red",
+    refImage:"/images/logos/britannica.jpg",
+    refLink:"https://www.britannica.com/event/Invasion-of-Poland",
+    refText:"Britannica",
   },
   {
     lat: 54.87552,
@@ -352,6 +424,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/british_declare_war.jpg",
     date: "1939-09-03",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/British_declaration_of_war_on_Germany_(1939)",
+    refText:"Wikipedia",
   },
   {
     lat: 46.65433,
@@ -363,17 +438,23 @@ export const ww2Events: WW2Event[] = [
     image: "/images/france_war_declare.jpg",
     date: "1939-09-03",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/French_declaration_of_war_on_Germany_(1939)",
+    refText:"Wikipedia",
   },
   {
     lat: 52.22607,
     lng: 21.02279,
-    title: "Polish Governmenet Retreated from Warsaw",
+    title: "Polish Governmenet Retrieved from Warsaw",
     paragraph1:"Between September 6 and 12, 1939, as Nazi Germany’s invasion of Poland intensified, the Polish government and military high command made the critical decision to evacuate Warsaw and move southeast toward the Romanian border. The rapid German advance, supported by overwhelming air power and mechanized forces, made the defense of the capital increasingly untenable. Polish leaders, including President Ignacy Mościcki, Prime Minister Felicjan Sławoj Składkowski, and Commander-in-Chief Edward Rydz-Śmigły, aimed to regroup near the so-called “Romanian Bridgehead,” a defensive zone along the Dniester and Prut rivers, where they hoped to receive Allied support and continue resistance.",
     paragraph2:"As the evacuation proceeded, chaos spread across central and eastern Poland. Government offices, gold reserves, and military units moved in disarray, often under constant Luftwaffe bombardment. Communication broke down, and the planned coordination with French and British forces never materialized. The fall of key cities such as Kraków, Łódź, and eventually the encirclement of Warsaw further undermined Polish hopes of holding out.",
     paragraph3:"By mid-September, the situation had deteriorated beyond recovery. When the Soviet Union invaded eastern Poland on September 17, the government’s escape route closed. Within days, Polish leaders crossed into Romania, where they were interned—marking the effective collapse of organized Polish resistance.",
     image: "/images/polishretreated.jpg",
     date: "1939-09-06",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/French_declaration_of_war_on_Germany_(1939)",
+    refText:"Wikipedia",
   },
   {
     lat: 52.18138,
@@ -385,6 +466,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/sovientsinborders.jpg",
     date: "1939-09-14",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 49.84896,
@@ -396,6 +480,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/sovietinvasioninpoland.jpg",
     date: "1939-09-17",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 51.58042,
@@ -407,6 +494,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/polishbordertroops.jpg",
     date: "1939-09-17",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 55.75760,
@@ -418,6 +508,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/polishnote.jpg",
     date: "1939-09-17",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 51.52895,
@@ -429,6 +522,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/Battles of Szack and Kodziowka.jpg",
     date: "1939-09-18",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 54.68746,
@@ -440,6 +536,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/sovietcapturedwilno.jpg",
     date: "1939-09-18",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 53.13361,
@@ -451,6 +550,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/Białystok.jpg",
     date: "1939-09-19",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 52.47416,
@@ -462,6 +564,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/Battle-of-Grodno.jpg",
     date: "1939-09-19",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 49.83877,
@@ -473,6 +578,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/tanksinlviv-creditWW2COLOURISEDPHOTOS-FB.jpg",
     date: "1939-09-19",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
     lat: 51.21542,
@@ -484,17 +592,23 @@ export const ww2Events: WW2Event[] = [
     image: "/images/battleofKovel-creditWarHistoryOnline.jpg",
     date: "1939-09-20",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Soviet_invasion_of_Poland",
+    refText:"Wikipedia",
   },
   {
-    lat: 41.78772,
-    lng: 123.43501,
-    title: "xxxx",
-    paragraph1:"",
-    paragraph2:"",
-    paragraph3:"",
-    image: "/images/.jpg",
-    date: "1912-03-27",
+    lat: 51.40353,
+    lng: 21.77710,
+    title: "Soviet Seizure of Pinsk",
+    paragraph1:"On the night of September 20, 1939, Soviet forces captured the strategically important town of Pinsk, located in the Polesie region of eastern Poland. Pinsk was a vital transportation and communication hub, controlling key river routes along the Pina and Pripyat Rivers. Its location made it essential for the movement of troops and supplies across the marshy terrain that dominated the region. As part of the Soviet Union’s rapid advance into eastern Poland, the seizure of Pinsk ensured control over the waterways and allowed the Red Army to strengthen its logistical network.",
+    paragraph2:"Polish defenses in Pinsk were limited, as many units had already withdrawn to join larger formations attempting to reach the Romanian Bridgehead. The Soviet assault encountered only scattered resistance from Border Protection Corps (KOP) detachments and local police forces. Despite this, brief firefights occurred in the town’s outskirts before Polish defenders were overwhelmed by superior Soviet numbers, mechanized units, and coordinated river crossings.",
+    paragraph3:"By capturing Pinsk, the Red Army secured a critical foothold in the Polesie region, further tightening its grip on eastern Poland. The fall of the town also cut off remaining Polish retreat routes and ensured that Soviet forces could continue their southward and westward operations with minimal logistical obstruction.",
+    image: "/images/pinskinvation.jpg",
+    date: "1939-09-20",
     color: "red",
+    refImage:"/images/Rymaszewski.jpg",
+    refLink:"https://www.rymaszewski.net.au/5soviets.html",
+    refText:"Rymaszewski",
   },
   {
     lat: 41.78772,
@@ -594,6 +708,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/winterwar.jpg",
     date: "1939-11-30",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Winter_War",
+    refText:"Wikipedia",
   },
   {
     lat: 41.78772,
@@ -616,6 +733,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/dunkirk.jpg",
     date: "1940-05-26",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Dunkirk_evacuation",
+    refText:"Wikipedia",
   },
   {
     lat: 38.90772,
@@ -627,6 +747,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/office_of_price_administration.jpg",
     date: "1941-08-28",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Office_of_Price_Administration",
+    refText:"Wikipedia",
   },
   {
     lat: 21.35071,
@@ -638,6 +761,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/pearl-harbor-bomb.jpg",
     date: "1941-12-07",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpg",
+    refLink:"https://en.wikipedia.org/wiki/Attack_on_Pearl_Harbor",
+    refText:"Wikipedia",
   },
   {
     lat: 38.90772,
@@ -649,6 +775,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/usa_declare_war.jpg",
     date: "1941-12-08",
     color: "red",
+    refImage:"/images/logos/wararchivesyt.jpg",
+    refLink:"https://www.youtube.com/watch?v=lK8gYGg0dkE",
+    refText:"War Archives",
   },
   {
     lat: 52.52059,
@@ -660,6 +789,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/hitlerdeclareswar.png",
     date: "1941-12-11",
     color: "red",
+    refImage:"/images/logos/ww2nationalmuseumorleans.jpeg",
+    refLink:"https://www.nationalww2museum.org/war/articles/hitlers-declaration-war-united-states",
+    refText:"The WWII National Museum",
   },
   {
     lat: 41.89948,
@@ -671,6 +803,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/italydeclarewar.jpg",
     date: "1941-12-11",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpeg",
+    refLink:"https://en.wikipedia.org/wiki/Italian_declaration_of_war_on_the_United_States",
+    refText:"Wikipedia",
   },
   {
     lat: 48.61199,
@@ -682,6 +817,9 @@ export const ww2Events: WW2Event[] = [
     image: "/images/captainkonovalov.png",
     date: "1942-07-13",
     color: "red",
+    refImage:"/images/logos/wikipedia.jpeg",
+    refLink:"https://en.wikipedia.org/wiki/Semyon_Vasilyevich_Konovalov",
+    refText:"Wikipedia",
   },
   {
     lat: 48.71336,

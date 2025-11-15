@@ -41,6 +41,32 @@ export default function EventCard({ event, onClose }: EventCardProps) {
         {event.paragraph2 && <p>{event.paragraph2}</p>}
         {event.paragraph3 && <p>{event.paragraph3}</p>}
       </div>
+
+      {event.refImage && event.refLink && (
+        <div className="mt-4 flex items-center gap-3 w-full">
+
+          {/* Reference Image */}
+          <div className="w-10 h-10 rounded-xl bg-gray-800 p-1 flex items-center justify-center">
+            <Image
+              src = {event.refImage}
+              alt=""
+              width={40}
+              height={40}
+              className="object-cover"
+            />
+          </div>
+
+          {/*Reference Link*/}
+          <a
+            href={event.refLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-center bg-gray-700/90 hover:bg-gray-500 px-4 py-2 rounded-xl text-sm font-semibold shadow-md transition"
+          >
+            {event.refText}
+          </a>
+        </div>  
+      )}
     </div>
   );
 }
