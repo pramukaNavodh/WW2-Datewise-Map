@@ -90,41 +90,88 @@ export default function WW2Globe() {
   }, []);
 
   const goToPreviousIncident = () => {
-    const currentIndex = sortedDates.findIndex((d) => d === selectedDateString);
-    let targetDate = "";
+  const todaysEvents = markers;
 
-    if (currentIndex === -1) {
-      const pastDates = sortedDates.filter((d) => new Date(d) < new Date(selectedDateString));
-      if (pastDates.length > 0) targetDate = pastDates[pastDates.length - 1];
-    } else if (currentIndex > 0) {
-      targetDate = sortedDates[currentIndex - 1];
+  // If no event selected, open last one
+  if (currentEventIndex === null) {
+    if (todaysEvents.length > 0) {
+      const lastIndex = todaysEvents.length - 1;
+      setSelectedEvent(todaysEvents[lastIndex]);
+      setCurrentEventIndex(lastIndex);
+      return;
     }
+  }
 
-    if (targetDate) {
-      setDate(new Date(targetDate));
-      setSelectedEvent(null);
+  // If previous exists on same date
+  if (currentEventIndex !== null && currentEventIndex > 0) {
+    const prevIndex = currentEventIndex - 1;
+    setSelectedEvent(todaysEvents[prevIndex]);
+    setCurrentEventIndex(prevIndex);
+    return;
+  }
+
+  // Move to previous date with incidents
+  const currentDateIndex = sortedDates.findIndex(
+    (d) => d === selectedDateString
+  );
+
+  if (currentDateIndex > 0) {
+    const prevDate = sortedDates[currentDateIndex - 1];
+    setDate(new Date(prevDate));
+
+    const prevDateEvents = ww2Events.filter((e) => e.date === prevDate);
+    if (prevDateEvents.length > 0) {
+      const lastIndex = prevDateEvents.length - 1;
+      setSelectedEvent(prevDateEvents[lastIndex]);
+      setCurrentEventIndex(lastIndex);
     }
-  };
+  }
+};
 
   const goToNextIncident = () => {
-    const currentIndex = sortedDates.findIndex((d) => d === selectedDateString);
-    let targetDate = "";
+  const todaysEvents = markers;
 
-    if (currentIndex === -1) {
-      const futureDates = sortedDates.filter((d) => new Date(d) > new Date(selectedDateString));
-      if (futureDates.length > 0) targetDate = futureDates[0];
-    } else if (currentIndex < sortedDates.length - 1) {
-      targetDate = sortedDates[currentIndex + 1];
+  // If no event selected yet, open first one
+  if (currentEventIndex === null) {
+    if (todaysEvents.length > 0) {
+      setSelectedEvent(todaysEvents[0]);
+      setCurrentEventIndex(0);
+      return;
     }
+  }
 
-    if (targetDate) {
-      setDate(new Date(targetDate));
-      setSelectedEvent(null);
+  // If more events exist today
+  if (
+    currentEventIndex !== null &&
+    currentEventIndex < todaysEvents.length - 1
+  ) {
+    const nextIndex = currentEventIndex + 1;
+    setSelectedEvent(todaysEvents[nextIndex]);
+    setCurrentEventIndex(nextIndex);
+    return;
+  }
+
+  // Move to next date with incidents
+  const currentDateIndex = sortedDates.findIndex(
+    (d) => d === selectedDateString
+  );
+
+  if (currentDateIndex < sortedDates.length - 1) {
+    const nextDate = sortedDates[currentDateIndex + 1];
+    setDate(new Date(nextDate));
+
+    const nextDateEvents = ww2Events.filter((e) => e.date === nextDate);
+    if (nextDateEvents.length > 0) {
+      setSelectedEvent(nextDateEvents[0]);
+      setCurrentEventIndex(0);
     }
-  };
+  }
+};
 
   const hasPrev = sortedDates.some((d) => new Date(d) < new Date(selectedDateString));
   const hasNext = sortedDates.some((d) => new Date(d) > new Date(selectedDateString));
+
+  const [currentEventIndex, setCurrentEventIndex] = useState<number | null>(null);
 
   if (!dimensions) {
     return (
@@ -166,6 +213,7 @@ export default function WW2Globe() {
             setDate(val as Date);
             setSelectedEvent(null);
             setIsCalendarOpen(false);
+            setCurrentEventIndex(null);
           }}
           value={date}
           minDate={new Date(1800, 0, 1)}
@@ -211,9 +259,14 @@ export default function WW2Globe() {
         pointColor={() => "#ff3333"}
         pointLabel={(d: any) => `${d.title} — ${d.date}`}
         onPointClick={(point: WW2Event) => {
+          const index = markers.findIndex(e => e === point);
+          setCurrentEventIndex(index);
           setSelectedEvent(point);
-          globeRef.current.pointOfView({ lat: point.lat, lng: point.lng, altitude: 0.8 }, 1000);
-        }}
+          globeRef.current.pointOfView(
+            { lat: point.lat, lng: point.lng, altitude: 0.8 },
+              1000
+          );
+      }}
         htmlElementsData={markers}
         htmlElement={(d: any) => {
           const el = document.createElement("div");
